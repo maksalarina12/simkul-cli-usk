@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "simkul-cli"
+version = "0.1.0"
+description = "CLI tool untuk SimKuliah USK — absensi otomatis, jadwal, dan lebih."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "AkbarPermana" }
+]
+dependencies = [
+  "typer>=0.12.0",
+  "rich>=13.0.0",
+  "selenium>=4.35.0",
+  "ddddocr>=1.4.0",
+  "inquirerpy>=0.3.4",
+  "python-dotenv>=1.1.1",
+]
+
+[project.scripts]
+simkul = "simkul.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["simkul"]

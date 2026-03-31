@@ -1,0 +1,14 @@
+# Virtual Environment
+.venv/
+
+# Python cache & compiled files
+__pycache__/
+*.pyc
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Environment variables
+.env
