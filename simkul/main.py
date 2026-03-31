@@ -46,6 +46,7 @@ def main(ctx: typer.Context):
             "Absen Auto (daemon)",
             "Jadwal Hari Ini",
             "Jadwal Semester",
+            "Update Jadwal",   
             "Setup Notifikasi",
             "Whoami",
             "Logout",
@@ -63,6 +64,8 @@ def main(ctx: typer.Context):
         jadwal(semester=False)
     elif pilihan == "Jadwal Semester":
         jadwal(semester=True)
+    elif pilihan == "Update Jadwal":
+        jadwal(semester=True, refresh=True)
     elif pilihan == "Setup Notifikasi":
         setup_notif()
     elif pilihan == "Whoami":
