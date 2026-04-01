@@ -32,19 +32,12 @@ def _get_driver_dengan_session():
 
 
 @app.command()
-def absen(
-    auto: bool = typer.Option(False, "--auto", help="Mode daemon: absen otomatis sesuai jadwal.")
-):
-    """Lakukan absensi sekarang, atau jalankan mode otomatis dengan --auto."""
-
+def absen():
     if not is_logged_in():
         console.print("\n[yellow]Kamu belum login. Jalankan [bold]simkul login[/bold] dulu.[/yellow]")
         raise typer.Exit()
 
-    if auto:
-        _mode_auto()
-    else:
-        _mode_manual()
+    _mode_manual()
 
 
 def _mode_manual():
@@ -109,63 +102,6 @@ def _mode_manual():
                 title="Absen Berhasil", expand=False,
             ))
             kirim_notif("sukses", "Absen Berhasil", hasil["pesan"])
-    except Exception as e:
-        console.print(f"\n[red]Error: {e}[/red]")
-        kirim_notif("error", "Absen ERROR", str(e))
-    finally:
-        driver.quit()
-        
-def _mode_auto():
-    from simkul.core.cache import load_jadwal_cache
-    from simkul.core.scraper import get_jadwal_aktif_hari_ini
-    from datetime import datetime
-    from zoneinfo import ZoneInfo
-    from InquirerPy import inquirer
-
-    WIB = ZoneInfo("Asia/Jakarta")
-
-    console.print("\n[bold green]Mode Auto Aktif[/bold green]")
-    console.print("[dim]Mengambil jadwal hari ini dari cache...[/dim]\n")
-
-    # Pakai cache dulu
-    cache = load_jadwal_cache()
-    if not cache:
-        console.print("[yellow]Cache belum ada. Jalankan [bold]simkul jadwal --refresh[/bold] dulu.[/yellow]")
-        return
-
-    jadwal_hari_ini = get_jadwal_aktif_hari_ini(cache)
-
-    if not jadwal_hari_ini:
-        console.print("[yellow]Tidak ada jadwal kuliah hari ini.[/yellow]")
-        kirim_notif("info", "Tidak Ada Jadwal", "Tidak ada MK hari ini.")
-        return
-
-    for mk in jadwal_hari_ini:
-        console.print(f"[bold]{mk['nama_mk']}[/bold] — {mk['jam']} — {mk['ruang']}")
-
-    # Ambil jam mulai MK pertama — format "14.00 - 15.40"
-    jam_str = jadwal_hari_ini[0]["jam"].split("-")[0].strip().replace(".", ":")
-    now = datetime.now(WIB)
-    jam_mulai = datetime.strptime(jam_str, "%H:%M").replace(
-        year=now.year, month=now.month, day=now.day, tzinfo=WIB
-    )
-
-    selisih = (jam_mulai - now).total_seconds()
-    if selisih > 0:
-        selisih_menit = int(selisih // 60)
-        console.print(f"\n[dim]Menunggu {selisih_menit} menit sebelum absen...[/dim]")
-        time.sleep(selisih)
-
-    # Absen
-    driver = _get_driver_dengan_session()
-    if not driver:
-        console.print("[red]Session tidak valid. Silakan login ulang.[/red]")
-        return
-
-    try:
-        hasil = do_absen(driver)
-        console.print(f"\n[bold green]✓ {hasil['pesan']}[/bold green]")
-        kirim_notif("sukses", "Absen Berhasil (Auto)", hasil["pesan"])
     except Exception as e:
         console.print(f"\n[red]Error: {e}[/red]")
         kirim_notif("error", "Absen ERROR", str(e))

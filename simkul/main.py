@@ -44,7 +44,6 @@ def main(ctx: typer.Context):
         choices=[
             "Login",
             "Absen Sekarang",
-            "Absen Auto (daemon)",
             "Jadwal Hari Ini",
             "Jadwal Semester",
             "Update Jadwal",   
@@ -59,8 +58,6 @@ def main(ctx: typer.Context):
         login()
     elif pilihan == "Absen Sekarang":
         absen(auto=False)
-    elif pilihan == "Absen Auto (daemon)":
-        absen(auto=True)
     elif pilihan == "Jadwal Hari Ini":
         tampilkan_jadwal(semester=False, refresh=False)
     elif pilihan == "Jadwal Semester":
