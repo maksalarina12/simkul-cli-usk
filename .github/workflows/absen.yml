@@ -2,30 +2,23 @@ name: Absensi Otomatis
 
 on:
   schedule:
-    # Semua waktu dalam UTC (WIB - 7 jam)
-    # Format: 'menit jam * * hari'
-
-    # Rabu 14.00 WIB → UTC 07.00
-    - cron: '0 7 * * 3'
-
-    # Rabu 16.35 WIB → UTC 09.35
-    - cron: '35 9 * * 3'
-
-    # Kamis 08.00 WIB → UTC 01.00
-    - cron: '0 1 * * 4'
-
-    # Kamis 14.00 WIB → UTC 07.00
-    - cron: '0 7 * * 4'
-
-    # Jumat 16.35 WIB → UTC 09.35
-    - cron: '35 9 * * 5'
-
-    # Sabtu 14.00 WIB → UTC 07.00
-    - cron: '0 7 * * 6'
-
-    # Selasa 10.45 WIB → UTC 03.45
+    # Selasa 10.45 WIB (Pengolahan Citra Digital)
     - cron: '45 3 * * 2'
 
+    # Rabu 14.00 WIB (Technopreneurship, Proyek Technopreneurship)
+    - cron: '0 7 * * 3'
+
+    # Rabu 16.35 WIB (Metodologi Penelitian)
+    - cron: '35 9 * * 3'
+
+    # Kamis 08.00 WIB (Pattern Recognition, Visi Komputer)
+    - cron: '0 1 * * 4'
+
+    # Kamis 14.00 WIB (Visi Komputer, Internet of Things, Praktikum IoT)
+    - cron: '0 7 * * 4'
+
+    # Sabtu 14.00 WIB (Internet of Things, Praktikum IoT)
+    - cron: '0 7 * * 6'
   workflow_dispatch:
 
 jobs:
