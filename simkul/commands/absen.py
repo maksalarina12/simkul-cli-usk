@@ -30,7 +30,6 @@ def _get_driver_dengan_session():
 
     return driver
 
-
 @app.command()
 def absen():
     if not is_logged_in():
