@@ -13,9 +13,9 @@ def kirim_notif(tipe: str, judul: str, pesan: str):
         return
 
     topic_map = {
-        "sukses": f"{topic}-sukses",
+        "bisa": f"{topic}-bisa",
         "info": f"{topic}-info",
-        "error": f"{topic}-error",
+        "gagal": f"{topic}-gagal",
     }
 
     url = f"ntfy.sh/{topic_map.get(tipe, topic)}"
@@ -51,9 +51,9 @@ def setup_notif():
         config_set("ntfy_topic", topic.strip())
         console.print(f"\n[green]✓ Topic ntfy disimpan: {topic.strip()}[/green]")
         console.print(f"[dim]Subscribe ke topic berikut di app ntfy:[/dim]")
-        console.print(f"  [cyan]{topic}-sukses[/cyan]")
+        console.print(f"  [cyan]{topic}-bisa[/cyan]")
         console.print(f"  [cyan]{topic}-info[/cyan]")
-        console.print(f"  [cyan]{topic}-error[/cyan]")
+        console.print(f"  [cyan]{topic}-gagal[/cyan]")
     else:
         config_set("ntfy_topic", "")
         console.print("\n[yellow]Notifikasi dinonaktifkan.[/yellow]")
