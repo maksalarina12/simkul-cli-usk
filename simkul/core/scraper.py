@@ -114,17 +114,14 @@ def get_jadwal_semester(driver) -> list[dict]:
 # ─────────────────────────────────────────
 
 def get_jadwal_aktif_hari_ini(jadwal_semester: list[dict]) -> list[dict]:
-    """
-    Filter jadwal semester berdasarkan tanggal hari ini.
-    Cocokkan berdasarkan tanggal persis, bukan hanya hari.
-    """
     hari_ini = datetime.now(WIB).date()
-
+    print("DEBUG hari ini:", hari_ini)
+    print("DEBUG sample tanggal dari cache:", [mk.get("tanggal") for mk in jadwal_semester[:5]])
+    
     return [
         mk for mk in jadwal_semester
         if mk.get("tanggal") == hari_ini
     ]
-
 
 # ─────────────────────────────────────────
 # ABSENSI

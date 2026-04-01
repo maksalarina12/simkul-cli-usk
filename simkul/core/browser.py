@@ -5,7 +5,7 @@ import time
 
 BASE_URL = "https://simkuliah.usk.ac.id"
 
-def create_driver(headless: bool = False) -> webdriver.Chrome:
+def create_driver(headless: bool = True) -> webdriver.Chrome:
     """Buat dan return Chrome WebDriver."""
     options = Options()
 

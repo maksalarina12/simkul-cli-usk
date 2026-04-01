@@ -18,12 +18,21 @@ def save_jadwal_cache(jadwal: list[dict]):
 
 
 def load_jadwal_cache() -> list[dict] | None:
-    """Load jadwal dari cache. Return None kalau belum ada."""
     if not JADWAL_CACHE_FILE.exists():
         return None
     with open(JADWAL_CACHE_FILE, "r") as f:
         data = json.load(f)
-    return data.get("jadwal")
+    
+    jadwal = data.get("jadwal", [])
+    # Convert tanggal string balik ke date object
+    for mk in jadwal:
+        if mk.get("tanggal"):
+            try:
+                from datetime import date
+                mk["tanggal"] = date.fromisoformat(mk["tanggal"])
+            except Exception:
+                mk["tanggal"] = None
+    return jadwal
 
 
 def get_cache_info() -> dict | None:

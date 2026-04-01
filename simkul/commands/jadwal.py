@@ -17,7 +17,7 @@ def _get_driver_dengan_session():
     if not session:
         return None
 
-    driver = create_driver(headless=False)
+    driver = create_driver(headless=True)
     inject_cookies(driver, session["cookies"])
 
     if not is_session_valid(driver):
@@ -67,44 +67,36 @@ def _scrape_dan_cache(driver) -> list[dict]:
 
 @app.command()
 def jadwal(
-    semester: bool = typer.Option(False, "--semester", "-s", help="Tampilkan jadwal semester penuh."),
-    refresh: bool = typer.Option(False, "--refresh", "-r", help="Paksa update jadwal dari SimKuliah."),
+    semester: bool = typer.Option(False, "--semester", "-s"),
+    refresh: bool = typer.Option(False, "--refresh", "-r"),
 ):
-    """
-    Tampilkan jadwal kuliah.
-    Default: jadwal hari ini.
-    Dengan --semester: jadwal semester penuh.
-    Dengan --refresh: paksa scrape ulang dari SimKuliah.
-    """
     if not is_logged_in():
-        console.print("\n[yellow]Kamu belum login. Jalankan [bold]simkul login[/bold] dulu.[/yellow]")
+        console.print("\n[yellow]Belum login.[/yellow]")
         raise typer.Exit()
 
     cache = load_jadwal_cache()
+    print("DEBUG cache:", type(cache), len(cache) if cache else None)
 
-    # Kalau ada cache dan tidak diminta refresh, pakai cache
     if cache and not refresh:
+        # STOP DI SINI — jangan buka browser sama sekali
         info = get_cache_info()
-        console.print(f"\n[dim]Pakai cache jadwal (disimpan: {info['scraped_at'][:16].replace('T', ' ')})[/dim]")
+        console.print(f"\n[dim]Pakai cache (disimpan: {info['scraped_at'][:16].replace('T', ' ')})[/dim]")
         jadwal_data = cache
     else:
-        # Perlu scrape — buka browser
-        driver = _get_driver_dengan_session()
+        driver = _get_driver_dengan_session()  # baru buka browser di sini
         if not driver:
-            console.print("[red]Session tidak valid. Silakan login ulang dengan [bold]simkul login[/bold].[/red]")
+            console.print("[red]Session tidak valid.[/red]")
             raise typer.Exit()
         try:
             jadwal_data = _scrape_dan_cache(driver)
         except Exception as e:
-            console.print(f"\n[red]Error saat mengambil jadwal: {e}[/red]")
+            console.print(f"\n[red]Error: {e}[/red]")
             raise typer.Exit()
         finally:
             driver.quit()
 
-    # Tampilkan
     if semester:
         _tampilkan_tabel("Jadwal Kuliah Semester", jadwal_data)
     else:
-        from simkul.core.scraper import get_jadwal_aktif_hari_ini
         jadwal_hari_ini = get_jadwal_aktif_hari_ini(jadwal_data)
         _tampilkan_tabel("Jadwal Kuliah Hari Ini", jadwal_hari_ini)
