@@ -4,8 +4,9 @@ from InquirerPy import inquirer
 
 from simkul.commands.auth import app as auth_app, login, logout, whoami
 from simkul.commands.absen import app as absen_app, absen
-from simkul.commands.jadwal import app as jadwal_app, jadwal
+from simkul.commands.jadwal import app as jadwal_app, jadwal, tampilkan_jadwal
 from simkul.utils.notify import setup_notif
+
 
 app = typer.Typer(
     name="simkul",
@@ -61,11 +62,11 @@ def main(ctx: typer.Context):
     elif pilihan == "Absen Auto (daemon)":
         absen(auto=True)
     elif pilihan == "Jadwal Hari Ini":
-        jadwal(semester=False)
+        tampilkan_jadwal(semester=False, refresh=False)
     elif pilihan == "Jadwal Semester":
-        jadwal(semester=True)
+        tampilkan_jadwal(semester=True, refresh=False)
     elif pilihan == "Update Jadwal":
-        jadwal(semester=True, refresh=True)
+        tampilkan_jadwal(semester=True, refresh=True)
     elif pilihan == "Setup Notifikasi":
         setup_notif()
     elif pilihan == "Whoami":

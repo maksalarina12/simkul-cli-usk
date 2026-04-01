@@ -100,3 +100,34 @@ def jadwal(
     else:
         jadwal_hari_ini = get_jadwal_aktif_hari_ini(jadwal_data)
         _tampilkan_tabel("Jadwal Kuliah Hari Ini", jadwal_hari_ini)
+        
+def tampilkan_jadwal(semester: bool = False, refresh: bool = False):
+    """Versi non-Typer dari jadwal(), dipanggil langsung dari TUI."""
+    if not is_logged_in():
+        console.print("\n[yellow]Belum login.[/yellow]")
+        return
+
+    cache = load_jadwal_cache()
+
+    if cache and not refresh:
+        info = get_cache_info()
+        console.print(f"\n[dim]Pakai cache (disimpan: {info['scraped_at'][:16].replace('T', ' ')})[/dim]")
+        jadwal_data = cache
+    else:
+        driver = _get_driver_dengan_session()
+        if not driver:
+            console.print("[red]Session tidak valid.[/red]")
+            return
+        try:
+            jadwal_data = _scrape_dan_cache(driver)
+        except Exception as e:
+            console.print(f"\n[red]Error: {e}[/red]")
+            return
+        finally:
+            driver.quit()
+
+    if semester:
+        _tampilkan_tabel("Jadwal Kuliah Semester", jadwal_data)
+    else:
+        jadwal_hari_ini = get_jadwal_aktif_hari_ini(jadwal_data)
+        _tampilkan_tabel("Jadwal Kuliah Hari Ini", jadwal_hari_ini)
